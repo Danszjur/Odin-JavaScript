@@ -6,14 +6,18 @@ const GAMEBOARD = (() => {
     let board = cleanBoard;
     const getBoard = () => board;
     const setCell = (index, marker) => {
-        if (index !== "") {
+        if (board[index] === "") {
             board[index] = marker;
             return true;
         }
         return false;
     }
+
+
     const reset = () => {
-        board = cleanBoard;
+        board = [...cleanBoard];
+        console.log("visszaállítva");
+
     }
 
 
@@ -31,6 +35,8 @@ function newPlayer(name, marker) {
 
     return { name, marker, getScore, addScore }
 }
+
+
 
 //game flow object
 const GameController = (() => {
@@ -57,8 +63,18 @@ const GameController = (() => {
 
     const playRound = (index) => {
         if (GAMEBOARD.setCell(index, currentPlayer.marker)) {
+
             displayBoard();
+            if (GameRules.isWinning(GAMEBOARD.getBoard()) && !GameRules.isTie(GAMEBOARD.getBoard())) {
+                console.log(`${currentPlayer.name} is won!`);
+                resetGame();
+            }
+            else if (GameRules.isTie(GAMEBOARD.getBoard())) {
+                console.log("It's a Tie!");
+                resetGame();
+            }
             switchTurns();
+
         }
 
     }
@@ -70,8 +86,66 @@ const GameController = (() => {
         displayBoard();
     }
 
-    return { playRound, resetGame }
+    return { playRound, resetGame, displayBoard }
 
 
 })();
 
+
+const GameRules = (() => {
+    //  0   1   2
+    //  3   4   5
+    //  6   7   8
+    const winningPatterns = [
+        [0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8], [0, 4, 8], [2, 4, 6]
+    ];
+    const getWinningPatterns = () => winningPatterns;
+
+    const isWinning = (board) => {
+        for (const pattern of winningPatterns) {
+            const [a, b, c] = pattern;
+            if (board[a] && board[a] === board[b] && board[b] === board[c]) {
+                return true;
+            }
+
+        }
+        return false;
+    }
+
+    const isTie = (board) => {
+        return board.every(cell => cell !== "") && !GameRules.isWinning(board);
+    }
+
+    return { getWinningPatterns, isWinning, isTie }
+
+})();
+
+const DOMManipulation = (() => {
+
+    const displayBoard = () => {
+
+        let mainDiv = document.createElement("div")
+
+        mainDiv.id = "mainElement";
+
+        for (let i = 0; i < 9; i++) {
+            const element = document.createElement("div")
+            element.className = "cell";
+            element.textContent = "";
+            element.dataset.index = i;
+            element.addEventListener("click", (e) => {
+                GameController.playRound(e.target.dataset.index)
+            });
+            mainDiv.appendChild(element);
+        }
+
+        document.body.appendChild(mainDiv)
+    }
+
+
+
+    return { displayBoard }
+
+})();
+
+DOMManipulation.displayBoard()                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
