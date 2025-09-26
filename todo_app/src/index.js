@@ -1,23 +1,16 @@
 import "./style.css";
 //---------------------
-import Todos from "./models/todo";
 import Project from "./models/project";
-import ProjectList from "./models/projectList";
+import domElements from "./models/dom";
 //---------------------
 
-const setupProcess = (() => {
+let projectList = []
 
-    function generateDefaults() {
-        const deafultLista = new ProjectList()
-        const defaultProject = new Project("Default Project")
-        const defaultTodo = new Todos("Default Todo")
-    }
-
-    return { generateDefaults }
-})();
-
-
-
-
-
+function setupDefaults() {
+    const defProject = new Project("Default")
+    projectList.push(defProject)
+    const defTodo = defProject.makeTodo("Default")
+    domElements.navBarSetup(projectList)
+}
+setupDefaults();
 
