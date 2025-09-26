@@ -1,12 +1,12 @@
 class Todos {
-    constructor() {
-        this.title = null;
+    constructor(title) {
+        this.title = title;
         this.description = null;
         this.dueDate = new Date;
-        this.priority = null;
+        this.priority = 2;
         this.status = false;
 
-        this.notes = null;
+        this.notes = "";
         this.checklists = null;
 
     }

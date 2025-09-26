@@ -12,6 +12,11 @@ class Project {
     removeTodo(index) {
         this.todosList.splice(index, 1)
     }
+    makeTodo(title) {
+        const todo1 = new Todos(title);
+        this.todosList.push(todo1)
+        return todo1;
+    }
 
 }
 
