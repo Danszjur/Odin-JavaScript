@@ -1,113 +1,129 @@
-import Todos from "./todo";
-import Project from "./project";
-//-----------------------------------------------------------------
-const displayElement = document.getElementById("displayElement")
-const projectLists = document.getElementById("project-lists")
-const listOfTodos = document.getElementById("list-of-todos")
 
-const NewTodoBtn = document.getElementById("NewTodoBtn")
-const NewProjectBtn = document.getElementById("NewProjectBtn")
+const displayElement = document.getElementById("displayElement")
 
 const domElements = (() => {
+    const form = (() => {
 
-    function addTodoElement(todoObj) {
+        const newProjectForm = () => {
+            const dialogProject = document.createElement("dialog");
+            dialogProject.id = "projectform";
+            const h1 = document.createElement("h1");
+            h1.textContent = "Title of the new Project:"
+            const input = document.createElement("input");
+            input.type = "text";
+            input.id = "titleOfProject";
 
-        /* const todoObj = new Todos("title") */
+            const subdiv1 = document.createElement("div");
+            const saveBtn = document.createElement("button");
+            saveBtn.textContent = "Save";
+            saveBtn.addEventListener(onclick, () => {
+                hideFormAndSave("projectform");
+            });
+            const cancelBtn = document.createElement("button");
+            cancelBtn.textContent = "Cancel";
+            cancelBtn.addEventListener(onclick, () => {
+                hideFormCancel("projectform");
+            });
+            subdiv1.appendChild(saveBtn);
+            subdiv1.appendChild(cancelBtn);
+            dialogProject.appendChild(h1);
+            dialogProject.appendChild(input);
+            dialogProject.appendChild(subdiv1);
 
-        const todoContainer = document.createElement("div")
-        todoContainer.className = "todo-element";
-
-        const todoHeader = document.createElement("div")
-        todoHeader.className = "todo-header"
-
-        const checkBox = document.createElement("input");
-        checkBox.type = "checkbox";
-
-        const subdiv1 = document.createElement("div");
-
-        const h1Title = document.createElement("h1");
-        h1Title.textContent = todoObj.title;
-
-        const pDescription = document.createElement("p");
-        pDescription.textContent = todoObj.description;
-
-        const detailsButton = document.createElement("button");
-        detailsButton.textContent = "Details"
-        detailsButton.addEventListener("click", () => {
-            const footer = todoContainer.querySelector(".todo-footer")
-            let state = 0;
-            if (footer.style.display === "none") {
-                footer.style.display = "block";
-            } else {
-                footer.style.display = "none";
-            }
-
-        })
-
-
-        todoHeader.appendChild(checkBox)
-        subdiv1.appendChild(h1Title)
-        subdiv1.appendChild(pDescription)
-        todoHeader.appendChild(subdiv1)
-        todoHeader.appendChild(detailsButton)
-
-        //----------------------------------------------------------
-        const todoFooter = document.createElement("div")
-        todoFooter.className = "todo-footer";
-        todoFooter.style.display = "none";
-
-        const ul = document.createElement("ul");
-        ul.innerHTML = `
-        <li>Title: ${todoObj.title}</li>
-        <li>Description: ${todoObj.description}</li>
-        <li>Due Date: ${todoObj.dueDate}</li>
-        <li id="priotity-part">
-            <select>
-                <option value="1">Level 1 - Ugrent</option>
-                <option value="2" selected>Level 2 - Moderated</option>
-                <option value="3">Level 3 - Informal</option>
-            </select>
-        </li>
-        <li>Status: ${todoObj.status}</li>
-        <li id="checklist-part">Checklist:
-            <ol>
-                <li>Teeni 1</li>
-                <li>Teeni 2</li>
-                <li>Teeni 3</li>
-            </ol>
-        </li>
-        <li id="notes-part"><textarea name="notes-of-todo" id="notes-of-todo" placeholder="notes">${todoObj.notes}</textarea>
-        </li>
-        <li><button>Save changes</button></li>
-        <li><button>Modify</button></li>
-        `
-
-        todoFooter.appendChild(ul)
-
-        //----------------------------------------------------------
-        todoContainer.appendChild(todoHeader)
-        todoContainer.appendChild(todoFooter)
-
-        displayElement.appendChild(todoContainer)
-
-    }
-
-    function navBarSetup(projectList) {
-
-
-        for (const project of projectList) {
-            const projectBlock = document.createElement("div")
-
-            const titleOfProject = document.createElement("p")
-
-
-            for (const todo of project.todosList) {
-                const titleOfTodo = document.createElement("p")
-            }
+            displayElement.appendChild(dialogProject);
         }
-    }
 
-    return { addTodoElement, navBarSetup }
+        const newTodoForm = (projectslist) => {
+            const dialogTodo = document.createElement("dialog");
+            dialogTodo.id = "todoform";
+            //---------------------------------------------------------
+            const selectDiv = document.createElement("div");
+
+            const projectSelector = document.createElement("select");
+            projectSelector.id = "selector";
+            for (const project of projectslist.list) {
+                const option = document.createElement("option");
+                option.textContent = project.title;
+                projectSelector.appendChild(option);
+            }
+
+            selectDiv.appendChild(projectSelector);
+            dialogTodo.appendChild(selectDiv)
+            //---------------------------------------------------------
+            const descriptionDiv = document.createElement("div");
+
+            const descriptioninput = document.createElement("input");
+            descriptioninput.type = "text";
+
+            dialogTodo.appendChild(descriptionDiv);
+            //---------------------------------------------------------
+            const dueDateDiv = document.createElement("div");
+            const dueDateInput = document.createElement("input");
+            dueDateInput.type = "date";
+
+            dueDateDiv.appendChild(dueDateInput);
+            dialogTodo.appendChild(dueDateDiv);
+            //---------------------------------------------------------
+            const priorityLevelDiv = document.createElement("div");
+            const PrioritySelector = document.createElement("select");
+            const levels = ["1 - Critical", "2 - Moderate", "3 - Minor"];
+            for (const level of levels) {
+                const option = document.createElement("option");
+                option.textContent = level;
+                PrioritySelector.appendChild(option);
+            }
+            priorityLevelDiv.appendChild(PrioritySelector);
+            dialogTodo.appendChild(priorityLevelDiv);
+            //---------------------------------------------------------
+            const isDoneDiv = document.createElement("div");
+            const isDoneInput = document.createElement("input");
+            isDoneInput.type = "checkbox";
+
+            isDoneDiv.appendChild(isDoneInput);
+            dialogTodo.appendChild(isDoneDiv);
+            //---------------------------------------------------------
+            const notesDiv = document.createElement("div");
+            const noteInput = document.createElement("textarea");
+
+            notesDiv.appendChild(noteInput);
+            dialogTodo.appendChild(notesDiv);
+            //---------------------------------------------------------
+            const buttonsDiv = document.createElement("div");
+
+            const saveBtn = document.createElement("button")
+            saveBtn.textContent = "Save";
+            saveBtn.addEventListener("click", () => {
+                hideFormAndSave("todoform");
+            });
+
+            const cancelBtn = document.createElement("button")
+            cancelBtn.textContent = "Cancel";
+            cancelBtn.addEventListener("click", () => {
+                hideFormCancel("todoform");
+            });
+            buttonsDiv.appendChild(saveBtn);
+            buttonsDiv.appendChild(cancelBtn);
+            dialogTodo.appendChild(buttonsDiv);
+            //---------------------------------------------------------
+
+            displayElement.appendChild(dialogTodo);
+        }
+
+        function hideFormAndSave(idslector) {
+            console.log("saving...");
+            const inputForm = document.querySelector(`#${idslector}`).close();
+        }
+        function hideFormCancel(idslector) {
+            const inputForm = document.querySelector(`#${idslector}`).close();
+        }
+        function showForm(idslector) {
+            const inputForm = document.querySelector(`#${idslector}`).showModal();
+
+        }
+
+        return { newProjectForm, newTodoForm, showForm }
+    })();
+    return { form }
 })();
 
-export default domElements
+export default domElements;

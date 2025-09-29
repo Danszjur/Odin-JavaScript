@@ -1,15 +1,17 @@
+import Project from "./project";
+
 class ProjectList {
-    constructor() {
-        this.list = []
+    constructor(project) {
+        this.list = [];
     }
 
-    addProject(project) {
-        this.list.push(project)
+    makeProject(title) {
+        const newProject = new Project(title)
+        this.list.push(newProject)
+        return newProject;
     }
-    getProjects() {
-        return this.list;
+    deleteProject(index) {
+        this.list.splice(index, 1);
     }
-
 }
-
-export default ProjectList
+export default ProjectList;
