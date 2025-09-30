@@ -1,129 +1,83 @@
-
-const displayElement = document.getElementById("displayElement")
+const displayElement = document.getElementById("displayElement");
 
 const domElements = (() => {
-    const form = (() => {
+  const froms = (() => {
+    const projectForm = document.createElement("dialog");
+    projectForm.id = "project-form-dialog";
+    const todoForm = document.createElement("dialog");
+    todoForm.id = "todo-form-dialog";
 
-        const newProjectForm = () => {
-            const dialogProject = document.createElement("dialog");
-            dialogProject.id = "projectform";
-            const h1 = document.createElement("h1");
-            h1.textContent = "Title of the new Project:"
-            const input = document.createElement("input");
-            input.type = "text";
-            input.id = "titleOfProject";
+    projectForm.innerHTML = `
+    <form id="project-form" method="dialog">
+        <h2>Új Projekt Létrehozása</h2>
+        <div class="form-group">
+            <label for="project-title">Title:</label>
+            <input type="text" id="project-title" name="projectTitle" required>
+        </div>
+        <div class="form-actions">
+            <button type="submit" id="save-project-btn">Save</button>
+            <button type="button" id="cancel-project-btn">Cancel</button>
+        </div>
+    </form>
+`;
+    todoForm.innerHTML = `
+    <form id="todo-form" method="dialog">
+        <h2>Add new todo:</h2>
 
-            const subdiv1 = document.createElement("div");
-            const saveBtn = document.createElement("button");
-            saveBtn.textContent = "Save";
-            saveBtn.addEventListener(onclick, () => {
-                hideFormAndSave("projectform");
-            });
-            const cancelBtn = document.createElement("button");
-            cancelBtn.textContent = "Cancel";
-            cancelBtn.addEventListener(onclick, () => {
-                hideFormCancel("projectform");
-            });
-            subdiv1.appendChild(saveBtn);
-            subdiv1.appendChild(cancelBtn);
-            dialogProject.appendChild(h1);
-            dialogProject.appendChild(input);
-            dialogProject.appendChild(subdiv1);
+        <div class="form-group">
+            <select id="todo-project" name="todoProject" required>
+            <option value="" disabled selected>-- Choose project --</option>
+            </select>
+        </div>
 
-            displayElement.appendChild(dialogProject);
-        }
 
-        const newTodoForm = (projectslist) => {
-            const dialogTodo = document.createElement("dialog");
-            dialogTodo.id = "todoform";
-            //---------------------------------------------------------
-            const selectDiv = document.createElement("div");
+        <div class="form-group">
+            <label for="todo-title">Title:</label>
+            <input type="text" id="todo-title" name="todoTitle" required>
+        </div>
 
-            const projectSelector = document.createElement("select");
-            projectSelector.id = "selector";
-            for (const project of projectslist.list) {
-                const option = document.createElement("option");
-                option.textContent = project.title;
-                projectSelector.appendChild(option);
-            }
+        <div class="form-group">
+            <label for="todo-description">Description:</label>
+            <input type="text" id="todo-description" name="todoDescription">
+        </div>
 
-            selectDiv.appendChild(projectSelector);
-            dialogTodo.appendChild(selectDiv)
-            //---------------------------------------------------------
-            const descriptionDiv = document.createElement("div");
+        <div class="form-group-inline">
+        <label for="todo-isdone">Is Done?</label>
+            <input type="checkbox" id="todo-isdone" name="todoIsDone">
+        </div>
 
-            const descriptioninput = document.createElement("input");
-            descriptioninput.type = "text";
+        <div class="form-group">
+            <label for="todo-duedate">Due Date:</label>
+            <input type="date" id="todo-duedate" name="todoDueDate">
+        </div>
 
-            dialogTodo.appendChild(descriptionDiv);
-            //---------------------------------------------------------
-            const dueDateDiv = document.createElement("div");
-            const dueDateInput = document.createElement("input");
-            dueDateInput.type = "date";
+        <div class="form-group">
+            <label for="todo-priority">Priority Level (1-3):</label>
+            <select id="todo-priority" name="todoPriority">
+                <option value="1">1 (Low)</option>
+                <option value="2" selected>2 (Medium)</option>
+                <option value="3">3 (High)</option>
+            </select>
+        </div>
 
-            dueDateDiv.appendChild(dueDateInput);
-            dialogTodo.appendChild(dueDateDiv);
-            //---------------------------------------------------------
-            const priorityLevelDiv = document.createElement("div");
-            const PrioritySelector = document.createElement("select");
-            const levels = ["1 - Critical", "2 - Moderate", "3 - Minor"];
-            for (const level of levels) {
-                const option = document.createElement("option");
-                option.textContent = level;
-                PrioritySelector.appendChild(option);
-            }
-            priorityLevelDiv.appendChild(PrioritySelector);
-            dialogTodo.appendChild(priorityLevelDiv);
-            //---------------------------------------------------------
-            const isDoneDiv = document.createElement("div");
-            const isDoneInput = document.createElement("input");
-            isDoneInput.type = "checkbox";
+        <div class="form-group">
+            <label for="todo-notes">Notes:</label>
+            <textarea id="todo-notes" name="todoNotes" rows="4"></textarea>
+        </div>
 
-            isDoneDiv.appendChild(isDoneInput);
-            dialogTodo.appendChild(isDoneDiv);
-            //---------------------------------------------------------
-            const notesDiv = document.createElement("div");
-            const noteInput = document.createElement("textarea");
-
-            notesDiv.appendChild(noteInput);
-            dialogTodo.appendChild(notesDiv);
-            //---------------------------------------------------------
-            const buttonsDiv = document.createElement("div");
-
-            const saveBtn = document.createElement("button")
-            saveBtn.textContent = "Save";
-            saveBtn.addEventListener("click", () => {
-                hideFormAndSave("todoform");
-            });
-
-            const cancelBtn = document.createElement("button")
-            cancelBtn.textContent = "Cancel";
-            cancelBtn.addEventListener("click", () => {
-                hideFormCancel("todoform");
-            });
-            buttonsDiv.appendChild(saveBtn);
-            buttonsDiv.appendChild(cancelBtn);
-            dialogTodo.appendChild(buttonsDiv);
-            //---------------------------------------------------------
-
-            displayElement.appendChild(dialogTodo);
-        }
-
-        function hideFormAndSave(idslector) {
-            console.log("saving...");
-            const inputForm = document.querySelector(`#${idslector}`).close();
-        }
-        function hideFormCancel(idslector) {
-            const inputForm = document.querySelector(`#${idslector}`).close();
-        }
-        function showForm(idslector) {
-            const inputForm = document.querySelector(`#${idslector}`).showModal();
-
-        }
-
-        return { newProjectForm, newTodoForm, showForm }
-    })();
-    return { form }
+        <div class="form-actions">
+            <button type="submit" id="save-todo-btn">Save Todo</button>
+            <button type="button" id="cancel-todo-btn">Cancel</button>
+        </div>
+    </form>
+`;
+    function projectAndTodoFormDisplay() {
+      displayElement.appendChild(todoForm);
+      displayElement.appendChild(projectForm);
+    }
+    return { projectAndTodoFormDisplay };
+  })();
+  return { froms };
 })();
 
 export default domElements;
